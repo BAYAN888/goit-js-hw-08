@@ -66,38 +66,34 @@ const images = [
 
 const galleryContainer = document.querySelector(".gallery");
 
-images.forEach((image) => {
-  const galleryItem = document.createElement("li");
-  galleryItem.classList.add("gallery-item");
+const galleryHTML = images.map(
+  (image) => `
+    <li class="gallery-item">
+      <a class="gallery-link" href="${image.original}">
+        <img
+          class="gallery-image"
+          src="${image.preview}"
+          data-source="${image.original}"
+          alt="${image.description}"
+          style="width: 360px; height: 200px;"
+        />
+      </a>
+    </li>
+  `
+);
 
-  const galleryLink = document.createElement("a");
-  galleryLink.classList.add("gallery-link");
-  galleryLink.href = image.original;
-
-  const imageElement = document.createElement("img");
-  imageElement.classList.add("gallery-image");
-  imageElement.src = image.preview;
-  imageElement.setAttribute("data-source", image.original);
-  imageElement.alt = image.description;
-
-  imageElement.style.width = "360px";
-  imageElement.style.height = "200px";
-
-  galleryLink.appendChild(imageElement);
-  galleryItem.appendChild(galleryLink);
-  galleryContainer.appendChild(galleryItem);
-});
+galleryContainer.insertAdjacentHTML("beforeend", galleryHTML.join(""));
 
 galleryContainer.addEventListener("click", (e) => {
   e.preventDefault();
 
-  if (e.target.classList.contains("gallery-image")) {
+  if (e.target.nodeName === "IMG") {
     const largeImageSrc = e.target.dataset.source;
     const description = e.target.alt;
 
     const lightbox = basicLightbox.create(`
-            <img src="${largeImageSrc}" alt="${description}">
-        `);
+      <img src="${largeImageSrc}" alt="${description}" style="width: 100%;">
+    `);
 
     lightbox.show();
   }
